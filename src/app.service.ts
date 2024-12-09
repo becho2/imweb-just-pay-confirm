@@ -14,9 +14,25 @@ export class AppService {
     const site = await this.prisma.site.findUnique({
       where: {
         site_code: siteCode,
-        is_deleted: 'N',
       },
     });
+
+    if (site?.is_deleted === 'N') {
+      return '이미 연동이 완료된 사이트입니다.';
+    }
+
+    await this.imwebApiService.getAuthorizationCode(siteCode);
+
+    if (site?.is_deleted === 'Y') {
+      await this.prisma.site.update({
+        where: {
+          site_code: siteCode,
+        },
+        data: {
+          is_deleted: 'N',
+        },
+      });
+    }
 
     if (!site) {
       await this.prisma.site.create({
@@ -24,11 +40,9 @@ export class AppService {
           site_code: query.siteCode,
         },
       });
-
-      await this.imwebApiService.getAuthorizationCode(siteCode);
     }
 
-    return 'Hello World!';
+    return '연동이 완료되었습니다.';
   }
 
   async getAuthorizationCode(
