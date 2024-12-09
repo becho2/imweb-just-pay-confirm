@@ -54,8 +54,8 @@ export class AppService {
       await this.prisma.token.create({
         data: {
           site_code: query.state,
-          access_token: tokenData.access_token,
-          refresh_token: tokenData.refresh_token,
+          access_token: tokenData.accessToken,
+          refresh_token: tokenData.refreshToken,
         },
       });
     }

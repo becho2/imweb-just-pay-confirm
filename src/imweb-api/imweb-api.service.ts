@@ -34,7 +34,10 @@ export class ImwebApiService {
     );
   }
 
-  async getAccessToken(code: string) {
+  async getAccessToken(code: string): Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }> {
     const { data } = await firstValueFrom(
       this.httpService
         .post(
@@ -45,9 +48,7 @@ export class ImwebApiService {
             clientId: process.env.IMWEB_APP_CLIENT_ID,
             clientSecret: process.env.IMWEB_APP_CLIENT_SECRET,
             redirectUri:
-              process.env.ENV === 'local'
-                ? 'http://localhost:3900/authorize-call-back'
-                : 'https://justpayconfirm.duckdns.org/authorize-callback',
+              'https://justpayconfirm.duckdns.org/authorize-callback',
           },
           {
             headers: {
