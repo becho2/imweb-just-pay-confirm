@@ -12,7 +12,7 @@ import { OrdersResponseDto } from './dto/response/orders-response.dto';
 
 @Injectable()
 export class ImwebApiService {
-  private readonly baseUrl = 'https://openapi.imweb.me';
+  private readonly baseUrl = 'https://openapi.imtest.me';
   constructor(private readonly httpService: HttpService) {}
 
   async getAuthorizationCode(siteCode: string) {
