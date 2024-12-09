@@ -64,6 +64,8 @@ export class ImwebApiService {
         ),
     );
 
+    console.log(data);
+
     return data;
   }
 
