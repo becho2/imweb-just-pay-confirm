@@ -28,7 +28,7 @@ export class ImwebApiService {
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
-            throw new Error('An error happened!');
+            throw new Error('getAuthorizationCode: An error happened!');
           }),
         ),
     );
@@ -49,8 +49,8 @@ export class ImwebApiService {
         })
         .pipe(
           catchError((error) => {
-            console.log(error);
-            throw new Error('An error happened!');
+            console.log(error.response.data);
+            throw new Error('getAccessToken: An error happened!');
           }),
         ),
     );
@@ -72,7 +72,7 @@ export class ImwebApiService {
         .pipe(
           catchError((error) => {
             console.log(error);
-            throw new Error('An error happened!');
+            throw new Error('getPayWaitOrders: An error happened!');
           }),
         ),
     );
