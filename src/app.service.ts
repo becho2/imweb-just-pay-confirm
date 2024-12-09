@@ -51,6 +51,8 @@ export class AppService {
     const tokenData = await this.imwebApiService.getAccessToken(query.code);
 
     if (tokenData) {
+      console.log(tokenData);
+      console.log(tokenData.accessToken);
       await this.prisma.token.create({
         data: {
           site_code: query.state,

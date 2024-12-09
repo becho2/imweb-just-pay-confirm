@@ -66,7 +66,7 @@ export class ImwebApiService {
 
     console.log(data);
 
-    return data;
+    return data.data;
   }
 
   async getPayWaitOrders() {
