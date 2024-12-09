@@ -37,19 +37,24 @@ export class ImwebApiService {
   async getAccessToken(code: string) {
     const { data } = await firstValueFrom(
       this.httpService
-        .post(`${this.baseUrl}/oauth2/token`, {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+        .post(
+          `${this.baseUrl}/oauth2/token`,
+          {
+            grantType: 'authorization_code',
+            code,
+            clientId: process.env.IMWEB_APP_CLIENT_ID,
+            clientSecret: process.env.IMWEB_APP_CLIENT_SECRET,
+            redirectUri:
+              process.env.ENV === 'local'
+                ? 'http://localhost:3900/authorize-call-back'
+                : 'https://justpayconfirm.duckdns.org/authorize-callback',
           },
-          grantType: 'authorization_code',
-          code,
-          clientId: process.env.IMWEB_APP_CLIENT_ID,
-          clientSecret: process.env.IMWEB_APP_CLIENT_SECRET,
-          redirectUri:
-            process.env.ENV === 'local'
-              ? 'http://localhost:3900/authorize-call-back'
-              : 'https://justpayconfirm.duckdns.org/authorize-callback',
-        })
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          },
+        )
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
