@@ -88,7 +88,7 @@ export class ImwebApiService {
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
-            throw new Error('getAccessToken: An error happened!');
+            throw new Error('refreshToken: An error happened!');
           }),
         ),
     );
@@ -122,7 +122,7 @@ export class ImwebApiService {
   async confirmPayWaitOrder(accessToken: string, orderNo: number) {
     await firstValueFrom(
       this.httpService
-        .post(
+        .patch(
           `${this.baseUrl}/payments/${orderNo}/bank-transfer/confirm`,
           {},
           {
