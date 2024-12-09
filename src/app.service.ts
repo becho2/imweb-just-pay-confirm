@@ -86,20 +86,25 @@ export class AppService {
       });
 
       if (!token) {
-        await this.imwebApiService.getAuthorizationCode(site.site_code);
+        continue;
       }
 
-      const orders = await this.imwebApiService.getPayWaitOrders(
-        token.access_token,
-      );
+      const accessToken = token.access_token;
 
-      console.log(orders);
-      // for (const order of orders) {
-      //   await this.imwebApiService.confirmPayWaitOrder(
-      //     token.access_token,
-      //     order.order_id,
-      //   );
-      // }
+      const orders = await this.imwebApiService.getPayWaitOrders(accessToken);
+
+      for (const order of orders) {
+        if (
+          order.payments.some(
+            (payment) => payment.paymentStatus === 'PAYMENT_PREPARATION',
+          )
+        ) {
+          await this.imwebApiService.confirmPayWaitOrder(
+            accessToken,
+            order.orderNo,
+          );
+        }
+      }
     }
   }
 }

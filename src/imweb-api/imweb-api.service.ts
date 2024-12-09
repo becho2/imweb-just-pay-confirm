@@ -21,7 +21,7 @@ export class ImwebApiService {
             redirectUri:
               'https://justpayconfirm.duckdns.org/authorize-callback',
             siteCode,
-            scope: 'site-info:write order:write',
+            scope: 'site-info:write order:write payment:write',
             state: siteCode,
           },
         })
@@ -73,7 +73,7 @@ export class ImwebApiService {
     const { data } = await firstValueFrom(
       this.httpService
         .get<OrdersResponseDto>(
-          `https://openapi.imweb.me/orders?page=1&saleChannel=IMWEB&limit=10&orderSectionStatus=PRODUCT_PREPARATION`,
+          `${this.baseUrl}/orders?page=1&saleChannel=IMWEB&limit=10&orderSectionStatus=PRODUCT_PREPARATION`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -89,5 +89,26 @@ export class ImwebApiService {
     );
 
     return data.data.list;
+  }
+
+  async confirmPayWaitOrder(accessToken: string, orderNo: number) {
+    await firstValueFrom(
+      this.httpService
+        .post(
+          `${this.baseUrl}/payments/${orderNo}/bank-transfer/confirm`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+        .pipe(
+          catchError((error) => {
+            console.log(error.response.data);
+            throw new Error('confirmPayWaitOrder: An error happened!');
+          }),
+        ),
+    );
   }
 }
