@@ -71,12 +71,15 @@ export class AppService {
     });
 
     for (const site of sites) {
+      const siteCode = site.site_code;
+
       const token = await this.prisma.token.findFirst({
         where: {
-          site_code: site.site_code,
+          site_code: siteCode,
         },
         select: {
           access_token: true,
+          refresh_token: true,
         },
         orderBy: {
           created_at: 'desc',
@@ -87,9 +90,25 @@ export class AppService {
         continue;
       }
 
-      const accessToken = token.access_token;
+      let accessToken = token.access_token;
+      const refreshToken = token.refresh_token;
+      let orders = [];
 
-      const orders = await this.imwebApiService.getPayWaitOrders(accessToken);
+      try {
+        orders =
+          await this.imwebApiService.getProductPreparationOrders(accessToken);
+      } catch (error) {
+        if (
+          error.response.data.statusCode === 401 &&
+          error.response.data.error.errorCode === '30101'
+        ) {
+          const newToken = await this.refreshToken(siteCode, refreshToken);
+          accessToken = newToken.accessToken;
+
+          orders =
+            await this.imwebApiService.getProductPreparationOrders(accessToken);
+        }
+      }
 
       for (const order of orders) {
         if (
@@ -104,5 +123,21 @@ export class AppService {
         }
       }
     }
+  }
+
+  async refreshToken(siteCode: string, refreshToken: string) {
+    const tokenData = await this.imwebApiService.refreshToken(refreshToken);
+
+    await this.prisma.token.updateMany({
+      data: {
+        access_token: tokenData.accessToken,
+        refresh_token: tokenData.refreshToken,
+      },
+      where: {
+        site_code: siteCode,
+      },
+    });
+
+    return tokenData;
   }
 }

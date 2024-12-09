@@ -68,7 +68,35 @@ export class ImwebApiService {
     return data.data;
   }
 
-  async getPayWaitOrders(accessToken: string) {
+  async refreshToken(refreshToken: string): Promise<AccessTokenResponseData> {
+    const { data } = await firstValueFrom(
+      this.httpService
+        .post<AccessTokenResponseDto>(
+          `${this.baseUrl}/oauth2/token`,
+          {
+            grantType: 'refresh_token',
+            clientId: process.env.IMWEB_APP_CLIENT_ID,
+            clientSecret: process.env.IMWEB_APP_CLIENT_SECRET,
+            refreshToken,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          },
+        )
+        .pipe(
+          catchError((error) => {
+            console.log(error.response.data);
+            throw new Error('getAccessToken: An error happened!');
+          }),
+        ),
+    );
+
+    return data.data;
+  }
+
+  async getProductPreparationOrders(accessToken: string) {
     const { data } = await firstValueFrom(
       this.httpService
         .get<OrdersResponseDto>(
@@ -82,7 +110,8 @@ export class ImwebApiService {
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
-            throw new Error('getPayWaitOrders: An error happened!');
+
+            throw error;
           }),
         ),
     );
@@ -105,7 +134,8 @@ export class ImwebApiService {
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
-            throw new Error('confirmPayWaitOrder: An error happened!');
+
+            throw error;
           }),
         ),
     );
