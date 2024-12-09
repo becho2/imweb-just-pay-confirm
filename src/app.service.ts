@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { GetAuthorizationCodeRequestDto } from './dto/get-authorization-code-request.dto';
-import { GetSiteInfoRequestDto } from './dto/get-site-info-request.dto';
+import { GetAuthorizationCodeRequestDto } from './dto/request/get-authorization-code-request.dto';
+import { GetSiteInfoRequestDto } from './dto/request/get-site-info-request.dto';
 import { ImwebApiService } from './imweb-api/imweb-api.service';
 
 @Injectable()
@@ -51,8 +51,6 @@ export class AppService {
     const tokenData = await this.imwebApiService.getAccessToken(query.code);
 
     if (tokenData) {
-      console.log(tokenData);
-      console.log(tokenData.accessToken);
       await this.prisma.token.create({
         data: {
           site_code: query.state,

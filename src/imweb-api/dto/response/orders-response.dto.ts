@@ -1,9 +1,9 @@
 export interface OrdersResponseDto {
   statusCode: number;
-  data: Data;
+  data: OrdersResponseData;
 }
 
-export interface Data {
+export interface OrdersResponseData {
   totalCount: number;
   totalPage: number;
   currentPage: number;
@@ -181,7 +181,7 @@ export interface ProductInfo {
   isTaxFree: string;
   weight: number;
   isRequireOption: string;
-  optionInfo: OptionInfo;
+  optionInfo: object;
   prodSkuNo: string;
   optionSkuNo: string;
   customProdCode: string;
@@ -194,5 +194,3 @@ export interface ProductInfo {
   maker: string;
   brand: string;
 }
-
-export interface OptionInfo {}

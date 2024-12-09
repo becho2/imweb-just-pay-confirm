@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
-import { GetAuthorizationCodeRequestDto } from './dto/get-authorization-code-request.dto';
-import { GetSiteInfoRequestDto } from './dto/get-site-info-request.dto';
+import { GetAuthorizationCodeRequestDto } from './dto/request/get-authorization-code-request.dto';
+import { GetSiteInfoRequestDto } from './dto/request/get-site-info-request.dto';
 
 @Controller()
 export class AppController {

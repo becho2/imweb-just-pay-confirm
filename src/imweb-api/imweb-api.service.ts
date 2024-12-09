@@ -1,6 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { catchError, firstValueFrom } from 'rxjs';
+import {
+  AccessTokenResponseData,
+  AccessTokenResponseDto,
+} from './dto/response/get-access-token-response.dto';
 import { OrdersResponseDto } from './dto/response/orders-response.dto';
 
 // API의 응답 JSON을 그대로 갖다 붙여서 Interface 를 만드세요.
@@ -34,13 +38,10 @@ export class ImwebApiService {
     );
   }
 
-  async getAccessToken(code: string): Promise<{
-    accessToken: string;
-    refreshToken: string;
-  }> {
+  async getAccessToken(code: string): Promise<AccessTokenResponseData> {
     const { data } = await firstValueFrom(
       this.httpService
-        .post(
+        .post<AccessTokenResponseDto>(
           `${this.baseUrl}/oauth2/token`,
           {
             grantType: 'authorization_code',
@@ -63,8 +64,6 @@ export class ImwebApiService {
           }),
         ),
     );
-
-    console.log(data);
 
     return data.data;
   }
