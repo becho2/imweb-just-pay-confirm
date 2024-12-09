@@ -100,7 +100,7 @@ export class ImwebApiService {
     const { data } = await firstValueFrom(
       this.httpService
         .get<OrdersResponseDto>(
-          `${this.baseUrl}/orders?page=1&saleChannel=IMWEB&limit=10&orderSectionStatus=PRODUCT_PREPARATION`,
+          `${this.baseUrl}/orders?page=1&saleChannel=IMWEB&limit=50&orderSectionStatus=PRODUCT_PREPARATION`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
