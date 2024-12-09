@@ -21,8 +21,6 @@ export class AppService {
       return '이미 연동이 완료된 사이트입니다.';
     }
 
-    await this.imwebApiService.getAuthorizationCode(siteCode);
-
     if (site?.is_deleted === 'Y') {
       await this.prisma.site.update({
         where: {
@@ -41,6 +39,8 @@ export class AppService {
         },
       });
     }
+
+    await this.imwebApiService.getAuthorizationCode(siteCode);
 
     return '연동이 완료되었습니다.';
   }

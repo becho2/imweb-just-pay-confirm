@@ -19,8 +19,8 @@ model site {
 model token {
   idx           Int      @id @default(autoincrement())
   site_code     String   @db.VarChar(22)
-  access_token  String   @db.VarChar(255)
-  refresh_token String   @db.VarChar(255)
+  access_token  String   @db.VarChar(500)
+  refresh_token String   @db.VarChar(500)
   created_at    DateTime @default(now()) @db.DateTime(0)
 }
 
