@@ -25,4 +25,11 @@ export class AppController {
 
     return `${resultString} <br />모든 결제대기 상태인 무통장입금 주문을 수동입금확인 처리했습니다.`;
   }
+
+  @Get('remove-site')
+  async removeSite(@Query('siteCode') siteCode?: string): Promise<string> {
+    await this.appService.removeSite(siteCode);
+
+    return `해당 사이트(${siteCode})와의 연동을 해제했습니다.`;
+  }
 }

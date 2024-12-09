@@ -14,11 +14,15 @@ export class AppService {
     const site = await this.prisma.site.findUnique({
       where: {
         site_code: siteCode,
+        is_deleted: 'N',
       },
     });
 
     if (site?.is_deleted === 'N') {
-      return `이미 연동이 완료된 사이트입니다. <br /><a href="/confirm-all?siteCode=${siteCode}">모든 주문 입금확인 처리하기</a>`;
+      return `이미 연동이 완료된 사이트입니다.
+<a href="/confirm-all?siteCode=${siteCode}">모든 주문 입금확인 처리하기</a>
+<a href="/remove-site?siteCode=${siteCode}">이 사이트(${siteCode}) 연동 해제하기</a>
+`;
     }
 
     if (site?.is_deleted === 'Y') {
@@ -150,7 +154,41 @@ export class AppService {
     return result;
   }
 
-  async refreshToken(siteCode: string, refreshToken: string) {
+  async removeSite(siteCode?: string): Promise<void> {
+    if (!siteCode) {
+      return;
+    }
+
+    await this.prisma.$transaction(async (tx) => {
+      const token = await tx.token.findFirst({
+        where: {
+          site_code: siteCode,
+        },
+        select: {
+          access_token: true,
+        },
+      });
+
+      await this.imwebApiService.cancelIntegration(token.access_token);
+
+      await tx.site.update({
+        where: {
+          site_code: siteCode,
+        },
+        data: {
+          is_deleted: 'Y',
+        },
+      });
+
+      await tx.token.deleteMany({
+        where: {
+          site_code: siteCode,
+        },
+      });
+    });
+  }
+
+  private async refreshToken(siteCode: string, refreshToken: string) {
     const tokenData = await this.imwebApiService.refreshToken(refreshToken);
 
     await this.prisma.token.updateMany({
