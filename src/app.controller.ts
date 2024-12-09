@@ -20,8 +20,8 @@ export class AppController {
   }
 
   @Get('confirm-all')
-  async confirmAll(): Promise<string> {
-    const resultString = await this.appService.confirmAll();
+  async confirmAll(@Query('siteCode') siteCode?: string): Promise<string> {
+    const resultString = await this.appService.confirmAll(siteCode);
 
     return `${resultString} <br />모든 결제대기 상태인 무통장입금 주문을 수동입금확인 처리했습니다.`;
   }

@@ -18,7 +18,7 @@ export class AppService {
     });
 
     if (site?.is_deleted === 'N') {
-      return '이미 연동이 완료된 사이트입니다.';
+      return `이미 연동이 완료된 사이트입니다. <br /><a href="/confirm-all?siteCode=${siteCode}">모든 주문 입금확인 처리하기</a>`;
     }
 
     if (site?.is_deleted === 'Y') {
@@ -65,14 +65,25 @@ export class AppService {
     return 'ok';
   }
 
-  async confirmAll(): Promise<string> {
-    const sites = await this.prisma.site.findMany({
-      where: {
-        is_deleted: 'N',
-      },
-    });
-
+  async confirmAll(siteCode?: string): Promise<string> {
+    let sites = [];
     let result: string = '';
+
+    if (siteCode) {
+      const site = await this.prisma.site.findUnique({
+        where: {
+          site_code: siteCode,
+          is_deleted: 'N',
+        },
+      });
+      sites = site ? [site] : [];
+    } else {
+      sites = await this.prisma.site.findMany({
+        where: {
+          is_deleted: 'N',
+        },
+      });
+    }
 
     for (const site of sites) {
       result += `siteCode: ${site.site_code} CHECK <br />`;
