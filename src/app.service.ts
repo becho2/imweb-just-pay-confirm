@@ -65,14 +65,17 @@ export class AppService {
     return 'ok';
   }
 
-  async confirmAll(): Promise<void> {
+  async confirmAll(): Promise<string> {
     const sites = await this.prisma.site.findMany({
       where: {
         is_deleted: 'N',
       },
     });
 
+    let result: string = '';
+
     for (const site of sites) {
+      result += `siteCode: ${site.site_code} CHECK <br />`;
       const siteCode = site.site_code;
 
       const token = await this.prisma.token.findFirst({
@@ -115,18 +118,25 @@ export class AppService {
       }
 
       for (const order of orders) {
+        result += `orderNo: ${order.orderNo} CHECK <br />`;
+
         if (
           order.payments.some(
             (payment) => payment.paymentStatus === 'PAYMENT_PREPARATION',
           )
         ) {
+          result += `${order.orderNo}는 결제대기 상태인 주문입니다. 수동입금확인 처리합니다. <br /><br />`;
           await this.imwebApiService.confirmPayWaitOrder(
             accessToken,
             order.orderNo,
           );
         }
       }
+
+      result += `----- siteCode: ${site.site_code} CHECK END<br />`;
     }
+
+    return result;
   }
 
   async refreshToken(siteCode: string, refreshToken: string) {
