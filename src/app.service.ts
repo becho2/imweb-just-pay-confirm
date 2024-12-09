@@ -102,13 +102,15 @@ export class AppService {
       } catch (error) {
         if (
           error.response.data.statusCode === 401 &&
-          error.response.data.error.errorCode === '30101'
+          error.response.data.error.errorCode === '30102'
         ) {
           const newToken = await this.refreshToken(siteCode, refreshToken);
           accessToken = newToken.accessToken;
 
           orders =
             await this.imwebApiService.getProductPreparationOrders(accessToken);
+        } else {
+          throw error;
         }
       }
 
