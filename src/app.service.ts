@@ -90,7 +90,7 @@ export class AppService {
     }
 
     for (const site of sites) {
-      result += `----- siteCode: ${site.site_code} CHECK <br />< br />`;
+      result += `----- siteCode: ${site.site_code} CHECK <br />`;
       const siteCode = site.site_code;
 
       const token = await this.prisma.token.findFirst({
