@@ -19,8 +19,8 @@ export class AppService {
     });
 
     if (site?.is_deleted === 'N') {
-      return `이미 연동이 완료된 사이트입니다.
-<a href="/confirm-all?siteCode=${siteCode}">모든 주문 입금확인 처리하기</a>
+      return `이미 연동이 완료된 사이트입니다. <br />
+<a href="/confirm-all?siteCode=${siteCode}">모든 주문 입금확인 처리하기</a> <br />
 <a href="/remove-site?siteCode=${siteCode}">이 사이트(${siteCode}) 연동 해제하기</a>
 `;
     }
@@ -90,7 +90,7 @@ export class AppService {
     }
 
     for (const site of sites) {
-      result += `siteCode: ${site.site_code} CHECK <br />`;
+      result += `----- siteCode: ${site.site_code} CHECK <br />< br />`;
       const siteCode = site.site_code;
 
       const token = await this.prisma.token.findFirst({
