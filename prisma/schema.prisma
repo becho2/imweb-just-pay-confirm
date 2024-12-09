@@ -16,6 +16,14 @@ model site {
   is_deleted site_is_deleted @default(N)
 }
 
+model token {
+  idx           Int      @id @default(autoincrement())
+  site_code     String   @db.VarChar(22)
+  access_token  String   @db.VarChar(255)
+  refresh_token String   @db.VarChar(255)
+  created_at    DateTime @default(now()) @db.DateTime(0)
+}
+
 enum site_is_deleted {
   Y
   N

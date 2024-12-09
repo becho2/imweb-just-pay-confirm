@@ -5,5 +5,6 @@ import { ImwebApiService } from './imweb-api.service';
 @Module({
   imports: [HttpModule],
   providers: [ImwebApiService],
+  exports: [ImwebApiService],
 })
 export class ImwebApiModule {}
