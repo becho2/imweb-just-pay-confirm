@@ -48,6 +48,8 @@ export class AppService {
   async getAuthorizationCode(
     query: GetAuthorizationCodeRequestDto,
   ): Promise<string> {
+    console.log(query);
+
     const tokenData = await this.imwebApiService.getAccessToken(query.code);
 
     if (tokenData) {
