@@ -64,4 +64,42 @@ export class AppService {
 
     return 'ok';
   }
+
+  async confirmAll(): Promise<void> {
+    const sites = await this.prisma.site.findMany({
+      where: {
+        is_deleted: 'N',
+      },
+    });
+
+    for (const site of sites) {
+      const token = await this.prisma.token.findFirst({
+        where: {
+          site_code: site.site_code,
+        },
+        select: {
+          access_token: true,
+        },
+        orderBy: {
+          created_at: 'desc',
+        },
+      });
+
+      if (!token) {
+        await this.imwebApiService.getAuthorizationCode(site.site_code);
+      }
+
+      const orders = await this.imwebApiService.getPayWaitOrders(
+        token.access_token,
+      );
+
+      console.log(orders);
+      // for (const order of orders) {
+      //   await this.imwebApiService.confirmPayWaitOrder(
+      //     token.access_token,
+      //     order.order_id,
+      //   );
+      // }
+    }
+  }
 }

@@ -69,20 +69,20 @@ export class ImwebApiService {
     return data.data;
   }
 
-  async getPayWaitOrders() {
+  async getPayWaitOrders(accessToken: string) {
     const { data } = await firstValueFrom(
       this.httpService
         .get<OrdersResponseDto>(
           `https://openapi.imweb.me/orders?page=1&saleChannel=IMWEB&limit=10&orderSectionStatus=PRODUCT_PREPARATION`,
           {
             headers: {
-              Authorization: `Bearer ${process.env.IMWEB_API_KEY}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           },
         )
         .pipe(
           catchError((error) => {
-            console.log(error);
+            console.log(error.response.data);
             throw new Error('getPayWaitOrders: An error happened!');
           }),
         ),
