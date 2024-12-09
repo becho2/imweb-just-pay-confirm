@@ -144,11 +144,15 @@ export class ImwebApiService {
   async cancelIntegration(accessToken: string) {
     await firstValueFrom(
       this.httpService
-        .patch(`${this.baseUrl}/site-info/integration-cancellation`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+        .patch(
+          `${this.baseUrl}/site-info/integration-cancellation`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
-        })
+        )
         .pipe(
           catchError((error) => {
             console.log(error.response.data);
