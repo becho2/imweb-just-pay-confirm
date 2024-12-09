@@ -38,6 +38,9 @@ export class ImwebApiService {
     const { data } = await firstValueFrom(
       this.httpService
         .post(`${this.baseUrl}/oauth2/token`, {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
           grantType: 'authorization_code',
           code,
           clientId: process.env.IMWEB_APP_CLIENT_ID,
