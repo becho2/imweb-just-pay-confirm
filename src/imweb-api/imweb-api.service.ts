@@ -1,6 +1,5 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { catchError, firstValueFrom } from 'rxjs';
 import { OrdersResponseDto } from './dto/response/orders-response.dto';
 
@@ -10,10 +9,7 @@ import { OrdersResponseDto } from './dto/response/orders-response.dto';
 @Injectable()
 export class ImwebApiService {
   private readonly baseUrl = 'https://openapi.imweb.me';
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private readonly httpService: HttpService) {}
 
   async getAuthorizationCode(siteCode: string) {
     await firstValueFrom(
@@ -23,9 +19,7 @@ export class ImwebApiService {
             responseType: 'code',
             clientId: process.env.IMWEB_APP_CLIENT_ID,
             redirectUri:
-              process.env.ENV === 'local'
-                ? 'http://localhost:3900/authorize-call-back'
-                : 'https://justpayconfirm.duckdns.org/authorize-call-back',
+              'https://justpayconfirm.duckdns.org/authorize-callback',
             siteCode,
             scope: 'site-info:write order:write',
             state: siteCode,
@@ -33,7 +27,7 @@ export class ImwebApiService {
         })
         .pipe(
           catchError((error) => {
-            console.log(error);
+            console.log(error.response.data);
             throw new Error('An error happened!');
           }),
         ),
@@ -51,7 +45,7 @@ export class ImwebApiService {
           redirectUri:
             process.env.ENV === 'local'
               ? 'http://localhost:3900/authorize-call-back'
-              : 'https://justpayconfirm.duckdns.org/authorize-call-back',
+              : 'https://justpayconfirm.duckdns.org/authorize-callback',
         })
         .pipe(
           catchError((error) => {

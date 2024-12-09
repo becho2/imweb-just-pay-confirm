@@ -12,7 +12,7 @@ export class AppController {
     return this.appService.getSiteInfo(query);
   }
 
-  @Get('authorize-call-back')
+  @Get('authorize-callback')
   async getAuthorizationCode(
     @Query() query: GetAuthorizationCodeRequestDto,
   ): Promise<string> {
