@@ -141,6 +141,28 @@ export class ImwebApiService {
     );
   }
 
+  async completeIntegration(accessToken: string) {
+    await firstValueFrom(
+      this.httpService
+        .patch(
+          `${this.baseUrl}/site-info/integration-complete`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        )
+        .pipe(
+          catchError((error) => {
+            console.log(error.response.data);
+
+            throw error;
+          }),
+        ),
+    );
+  }
+
   async cancelIntegration(accessToken: string) {
     await firstValueFrom(
       this.httpService

@@ -54,19 +54,21 @@ export class AppService {
   async getAuthorizationCode(
     query: GetAuthorizationCodeRequestDto,
   ): Promise<string> {
-    console.log(query);
-
     const tokenData = await this.imwebApiService.getAccessToken(query.code);
 
-    if (tokenData) {
-      await this.prisma.token.create({
-        data: {
-          site_code: query.state,
-          access_token: tokenData.accessToken,
-          refresh_token: tokenData.refreshToken,
-        },
-      });
+    if (!tokenData) {
+      return '토큰 발급에 실패했습니다.';
     }
+
+    await this.prisma.token.create({
+      data: {
+        site_code: query.state,
+        access_token: tokenData.accessToken,
+        refresh_token: tokenData.refreshToken,
+      },
+    });
+
+    await this.imwebApiService.completeIntegration(tokenData.accessToken);
 
     return 'ok';
   }
