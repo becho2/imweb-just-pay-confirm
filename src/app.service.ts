@@ -14,7 +14,9 @@ export class AppService {
     const site = await this.prisma.site.findUnique({
       where: {
         site_code: siteCode,
-        is_deleted: 'N',
+      },
+      select: {
+        is_deleted: true,
       },
     });
 
